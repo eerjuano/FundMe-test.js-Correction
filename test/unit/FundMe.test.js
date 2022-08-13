@@ -1,25 +1,24 @@
 const { assert, expect } = require("chai")
-const { providers } = require("ethers")
 const { deployments, ethers, getNamedAccounts } = require("hardhat")
-providers.getCode
+
 describe("FundMe", async function () {
     let fundMe
     let deployer
     let mockV3Aggregator
     const sendValue = ethers.utils.parseEther("1") // that converts the 1 to the amount of ether
+
     beforeEach(async () => {
         // deploy our fundMe contract
         // using Hardhat-deploy
         // const accounts = await ethers.getSigners()
         // const accountZero = accounts[0]
-       const {deployer} = await getNamedAccounts(); //this catch the deployer object and signed on deployer
+        deployer = (await getNamedAccounts()).deployer //this catch the deployer object and signed on deployer
         await deployments.fixture(["all"]) //fixture from hardhat allows us to acces all tags of the folders and files
-        fundMe = await ethers.getContractAt("FundMe", deployer) //now, fundMe variable would be equal to the contract FundMe
-        mockV3Aggregator = await ethers.getContractAt(
+        fundMe = await ethers.getContract("FundMe", deployer) //now, fundMe variable would be equal to the contract FundMe
+        mockV3Aggregator = await ethers.getContract(
             "MockV3Aggregator",
             deployer
         )
-        providers.getCode
     })
 
     describe("constructor", async function () {
@@ -29,9 +28,11 @@ describe("FundMe", async function () {
         })
     })
 
-    describe("fund", async function (){
-        it("Didn't send enough", async function(){
-            await fundMe.fund()
+    describe("fund", async function () {
+        it("Didn't send enough", async function () {
+            await expect(fundMe.fund()).to.be.revertedWith(
+                "Didn't send enough!"
+            )
         })
     })
 })
