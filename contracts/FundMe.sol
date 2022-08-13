@@ -18,11 +18,11 @@ contract FundMe {
     using PriceConverter for uint256;
 
     //State Variables
-
-    uint256 public constant minimumUSD = 50 * 1e18; //constant variables are cheaper when it is called than normal variables
-    address[] public funders;
     mapping(address => uint256) public addressToAmountFunded;
+    address[] public funders;
     address public immutable owner;
+    uint256 public constant minimumUSD = 50 * 1e18; //constant variables are cheaper when it is called than normal variables
+
     AggregatorV3Interface public priceFeed;
 
     modifier onlyOwner() {
@@ -81,5 +81,9 @@ contract FundMe {
         }("");
         require(callSucces, "Call failed");
         //this it refers to the hole contract
+    }
+
+    function getPriceFeed() public view returns (AggregatorV3Interface) {
+        return priceFeed;
     }
 }
